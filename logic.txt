@@ -1,0 +1,13 @@
+When create.. data will send to server, if unable to send, data will be store in the local database (1stSQLiteDatabase). the UPDATE column will set to 0.
+
+
+
+when update.. data will send to server, if unable to send, data will be store in the local database (1stSQLiteDatabase). the UPDATE column will set to 1.
+
+
+
+in receiving data from server. data store to the local database (2ndSQLiteDatabase)
+data from 2ndSQLiteDatabase use to display in list views, view activities, update activities.
+
+in list view activity...
+data taken out are ID, name, registerType(User) 
