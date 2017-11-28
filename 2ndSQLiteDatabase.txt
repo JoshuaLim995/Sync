@@ -1,0 +1,43 @@
+2nd SQLITE DATABASE
+
+//User table
+private static final String USER_DATABASE = "CREATE TABLE " + userContract.TABLE_NAME + " (" + 
+userContract._ID + " INTEGER," + 
+userContract.NAME + " TEXT," + 
+userContract.IC + " TEXT," + 
+userContract.GENDER + " TEXT, " +
+userContract.AGE + " TEXT, " +
+userContract.CONTACT +" TEXT, " +
+                    userContract.ADDRESS + " TEXT, " +
+                    userContract.REG_DATE + " TEXT, " + 
+                    userContract.REG_TYPE + " TEXT)";
+                    
+
+
+//Client table
+private static final String CLIENT_DATABASE = "CREATE TABLE " + clientContract.TABLE_NAME + " (" + 
+clientContract._ID + " INTEGER," + 
+clientContract.NAME + " TEXT," + 
+clientContract.IC + " TEXT," + 
+clientContract.GENDER + " TEXT, " +
+clientContract.AGE + " TEXT, " +
+clientContract.CONTACT +" TEXT, " +
+                    clientContract.ADDRESS + " TEXT, " +
+                    clientContract.REG_DATE + " TEXT, " + 
+                    clientContract.PATIENT_ID + " TEXT)";
+                    
+
+
+
+
+
+//Medical table
+private static final String CLIENT_DATABASE = "CREATE TABLE " + MedicalContract.TABLE_NAME + " (" + 
+MedicalContract._ID + " INTEGER," + 
+MedicalContract.DATE + " TEXT," + 
+MedicalContract.PATIENT_ID + " TEXT," + 
+MedicalContract.NURSE_ID + " TEXT, " +
+MedicalContract.BLOOD_PRESSURE + " TEXT, " +
+MedicalContract.SUGAR_LEVEL +" TEXT, " +
+                    MedicalContract.HEART_RATE + " TEXT, " +
+                    MedicalContract.TEMPERATURE + " TEXT)";

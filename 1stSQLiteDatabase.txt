@@ -1,0 +1,43 @@
+1st SQLITE DATABASE
+
+//User table
+private static final String USER_DATABASE = "CREATE TABLE " + userContract.TABLE_NAME + " (" + 
+userContract._ID + " INTEGER PRIMARY KEY," + 
+userContract.NAME + " TEXT," + 
+userContract.IC + " TEXT," + 
+userContract.GENDER + " TEXT, " +
+userContract.BIRTH_YEAR + " TEXT, " +
+userContract.CONTACT +" TEXT, " +
+                    userContract.ADDRESS + " TEXT, " +
+                    userContract.REG_DATE + " TEXT, " + 
+                    userContract.REG_TYPE + " TEXT, " + 
+                    userContract.UPDATE + " INT)"; //is Update set to 1, not update set to 0
+
+
+//Client table
+private static final String CLIENT_DATABASE = "CREATE TABLE " + clientContract.TABLE_NAME + " (" + 
+clientContract._ID + " INTEGER PRIMARY KEY," + 
+clientContract.NAME + " TEXT," + 
+clientContract.IC + " TEXT," + 
+clientContract.GENDER + " TEXT, " +
+clientContract.BIRTH_YEAR + " TEXT, " +
+clientContract.CONTACT +" TEXT, " +
+                    clientContract.ADDRESS + " TEXT, " +
+                    clientContract.REG_DATE + " TEXT, " + 
+                    clientContract.PATIENT_ID + " TEXT)";
+                    
+
+
+
+
+
+//Medical table
+private static final String CLIENT_DATABASE = "CREATE TABLE " + MedicalContract.TABLE_NAME + " (" + 
+MedicalContract._ID + " INTEGER PRIMARY KEY," + 
+MedicalContract.DATE + " TEXT," + 
+MedicalContract.PATIENT_ID + " TEXT," + 
+MedicalContract.NURSE_ID + " TEXT, " +
+MedicalContract.BLOOD_PRESSURE + " TEXT, " +
+MedicalContract.SUGAR_LEVEL +" TEXT, " +
+                    MedicalContract.HEART_RATE + " TEXT, " +
+                    MedicalContract.TEMPERATURE + " TEXT)";

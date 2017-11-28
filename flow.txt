@@ -1,0 +1,7 @@
+
+2 sqlite tables for an object
+- 1st sqlite database is for creating in mobile
+- 2nd sqlite database is for retrieving from server to mobile
+
+1st sqlite database will be deleted after successfully upload to server base from id, when uploading to teh server, the id is excluded
+2nd sqlite database will be constantly retrieve from database by dropping and then insert all data from server (best if database can be updated instead of drop and then insert again)

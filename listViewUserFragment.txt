@@ -1,0 +1,117 @@
+
+//Get user data from server and insert into sqlite
+private void GetUsers() {
+
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, URLs.READ_ALL,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        progressDialog.dismiss();
+                        try {
+                            JSONObject obj = new JSONObject(new String(response.data));
+
+                            if(!obj.getBoolean("error")) {
+
+                                //converting the string to json array object
+                                Toast.makeText(getActivity(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                JSONArray array = obj.getJSONArray("result");
+
+                                //traversing through all the object
+                                for (int i = 0; i < array.length(); i++) {
+
+                                    //getting user object from json array
+                                    JSONObject user = array.getJSONObject(i);
+
+                                    //adding the product to product list
+//User(int id, String name, String ic, string contact, int birthyear, String address, String gender, String regisDate, String regisType)
+                                    User user = new User(
+                                        userJason.getInt("ID"),
+                                        userJason.getString("Name"),
+                                        userJason.getString("IC"),
+                                        userJason.getString("Contact"),
+                                        userJason.getInt("BirthYear"),
+                                        userJason.getString("Address"),
+                                        userJason.getString("Gender"),
+                                        userJason.getString("RegisDate"),
+                                        userJason.getString("RegisType")
+					);
+
+
+//QUERY HERE TO ADD USER INTO DATABASE
+Queries queries = new Queries(new DatabaseHelper(getApplicationContext()));
+
+                if(queries.insert(user) != 0)
+Toast.makeText(getApplicationContext(), "User created", Toast.LENGTH_SHORT).show();
+
+
+                                }
+
+                                //creating adapter object and setting it to recyclerview
+                                UserAdapter adapter = new UserAdapter(userList, getActivity());
+                                listView.setAdapter(adapter);
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), "Unable to retrieve data from server", Toast.LENGTH_SHORT).show();
+                    }
+                }){
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String, String> params = new HashMap<>();
+
+                params.put("type", "User");
+                return params;
+            }
+
+        };
+
+
+        //adding our stringrequest to queue
+        Volley.newRequestQueue(getActivity()).add(multipartRequest);
+}
+
+
+
+
+
+
+//for display Users to listView from dataBase and ArrayAdapter with cursor
+public void DisplayUserList() {
+
+        Queries dbq = new Queries(new DatabaseHelper(getActivity()));
+
+        String[] columns = {
+                DatabaseContract.UserContract._ID,
+                DatabaseContract.UserContract.NAME,
+                DatabaseContract.UserContract.REG_TYPE
+        };
+        Cursor cursor = dbq.query(DatabaseContract.NurseContract.TABLE_NAME, columns, null, null, null, null, DatabaseContract.NurseContract._ID + " ASC");
+
+
+if(cursor.moveToFirst()){
+do{
+
+User user = new User(
+	cursor.getInt(cursor.getColumnIndex(DatabaseContract.UserContract._ID)),
+	cursor.getString(cursor.getColumnIndex(DatabaseContract.UserContract.NAME)),
+	cursor.getString(cursor.getColumnIndex(DatabaseContract.UserContract.REG_TYPE))
+	);
+userList.add(user);
+}while(cursor.moveToNext());
+}
+
+
+UserAdapter adapter = new UserAdapter(userList, getActivity());
+listView.setAdapter(adapter);
+}
+

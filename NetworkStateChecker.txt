@@ -1,0 +1,135 @@
+public class NetworkStateChecker extends BroadcastReceiver {
+    
+    //context and database helper object
+    private Context context;
+    private DatabaseHelper db;
+
+private Queries dbq = new Queries(new DatabaseHelper(getActivity()));
+ 
+    
+    @Override
+    public void onReceive(Context context, Intent intent) {
+ 
+        this.context = context;
+ 
+        db = new DatabaseHelper(context);
+ 
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        
+        //if there is a network
+        if (activeNetwork != null) {
+            //if connected to wifi or mobile data plan
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI || activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                
+                //Prepare for Query
+
+        
+
+        String[] columns = {
+                DatabaseContract.UserContract._ID,
+                DatabaseContract.UserContract.NAME,
+                DatabaseContract.UserContract.IC,
+                DatabaseContract.UserContract.GENDER,
+                DatabaseContract.UserContract.AGE,
+                DatabaseContract.UserContract.CONTACT,
+                DatabaseContract.UserContract.ADDRESS,
+                DatabaseContract.UserContract.REG_DATE,
+                DatabaseContract.UserContract.REG_TYPE,
+		DatabaseContract.UserContract.UPDATE
+        };
+        Cursor cursor = dbq.query(DatabaseContract.UserContract.TABLE_NAME, columns, null, null, null, null, DatabaseContract.UserContract._ID + " ASC");
+
+
+
+
+                if (cursor.moveToFirst()) {
+                    do {
+                        //calling the method to save the unsynced name to MySQL
+                        saveUserToServer(
+                                cursor.getString(cursor.getColumnIndex(userContract._ID)),
+                                cursor.getString(cursor.getColumnIndex(userContract.NAME)),
+				cursor.getString(cursor.getColumnIndex(userContract.IC)),
+				cursor.getString(cursor.getColumnIndex(userContract.GENDER)),
+				cursor.getString(cursor.getColumnIndex(userContract.BIRTH_YEAR)),
+				cursor.getString(cursor.getColumnIndex(userContract.CONTACT)),
+				cursor.getString(cursor.getColumnIndex(userContract.ADDRESS)),
+				cursor.getString(cursor.getColumnIndex(userContract.REG_DATE)),
+				cursor.getString(cursor.getColumnIndex(userContract.REG_TYPE)),
+				cursor.getInt(cursor.getColumnIndex(userContract.UPDATE))
+                        );
+                    } while (cursor.moveToNext());
+                }
+            }
+        }
+    }
+
+
+private void saveUserToServer(String id, String name, String ic, String gender, String age, String contact, String address, String register_date, String user_type, int isUpdate){
+
+if(isUpdate == 1)
+	url = "...";
+else 
+	url = "...";
+
+	VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        try {
+                            JSONObject obj = new JSONObject(new String(response.data));
+                            Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                            if(!obj.getBoolean("error"))
+                                dbq.delete(userContract.TABLE_NAME, userContract._ID, id);
+
+                        } catch (JSONException e) {
+           //                 Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+           //                 e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+           //             Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
+           //             Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Calender calender = new Calender();
+
+                Map<String, String> params = new HashMap<>();
+
+
+                Integer birthYear = calender.getCurrentYear() - age;
+
+                params.put("type", "User");
+
+                params.put("Name", name);
+                params.put("IC", ic);
+                params.put("Gender", gender);
+                params.put("Birthyear", birthYear.toString());
+                params.put("Contact", contact);
+                params.put("Address", address);
+                params.put("regisDate",register_date );
+                params.put("regisType", user_type);
+
+                if(isUpdate == 1)
+                    params.put("id", id);
+
+                return params;
+            }
+
+        };
+
+        //adding the request to volley
+        Volley.newRequestQueue(this).add(volleyMultipartRequest);
+}
+
+
+}

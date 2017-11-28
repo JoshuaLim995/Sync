@@ -1,0 +1,146 @@
+package com.joshua_lsj.goldenage;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+/**
+ * Created by limsh on 10/21/2017.
+ */
+
+public class Queries {
+    DatabaseHelper helper;
+    private static DatabaseContract.PatientContract patientContract;
+    private static DatabaseContract.UserContract userContract;
+    private static DatabaseContract.ClientContract clientContract;
+    private static DatabaseContract.MedicalContract medicalContract;
+
+    public Queries(DatabaseHelper helper){
+        this.helper = helper;
+    }
+
+    public Cursor query(String tableName, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy){
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        return db.query(
+                tableName,
+                columns,
+                selection,
+                selectionArgs,
+                groupBy,
+                having,
+                orderBy
+        );
+    }
+
+    //INSERT DATA INTO PATIENT
+    public Long insert(Patient patient){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(patientContract.NAME, patient.getName());
+        values.put(patientContract.IC, patient.getIc());
+        values.put(patientContract.AGE, patient.getAge());
+        values.put(patientContract.GENDER, patient.getGender());
+        values.put(patientContract.BLOOD_TYPE, patient.getBlood_type());
+        values.put(patientContract.ADDRESS, patient.getAddress());
+        values.put(patientContract.CONTACT, patient.getContact());
+        values.put(patientContract.MEALS, patient.getMeals());
+        values.put(patientContract.ALLERGIC, patient.getAllergic());
+        values.put(patientContract.SICKNESS, patient.getSickness());
+        values.put(patientContract.REG_TYPE, patient.getRegister_type());
+        values.put(patientContract.REG_DATE, patient.getRegister_date());
+        values.put(patientContract.MARGIN, patient.getMargin().toString());
+//TODO: LATER NEED TO ADD MORE THINGS HERE
+
+
+        Long id = db.insert(patientContract.TABLE_NAME, null, values);
+        patient.setId(id);
+
+        return id;
+    }
+
+    //INSERT DATA INTO USER 
+    public Long insert(User user){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+if(user.getId() != null)
+        values.put(userContract._ID, user.getId());
+
+        values.put(userContract.NAME, user.getName());
+        values.put(userContract.IC, user.getIc());
+        values.put(userContract.GENDER, user.getGender());
+        values.put(userContract.AGE, user.getAge());
+        values.put(userContract.CONTACT, user.getContact());
+        values.put(userContract.ADDRESS, user.getAddress());
+        values.put(userContract.REG_DATE, user.getRegister_date());
+        values.put(userContract.REG_TYPE, user.getRegister_type());
+
+        Long id = db.insert(userContract.TABLE_NAME, null, values);
+//        user.setId(id);
+
+        return id;
+    }
+
+    
+
+    //INSERT DATA INTO CLIENT
+    public Long insert(Client client){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+if(user.getId() != null)
+        values.put(clientContract._ID, user.getId());
+
+        values.put(clientContract.NAME, client.getName());
+        values.put(clientContract.IC, client.getIc());
+        values.put(clientContract.GENDER, client.getGender());
+        values.put(clientContract.AGE, client.getAge());
+        values.put(clientContract.CONTACT, client.getContact());
+        values.put(clientContract.ADDRESS, client.getAddress());
+        values.put(clientContract.REG_DATE, client.getRegister_date());
+        values.put(clientContract.REG_TYPE, client.getRegister_type());
+
+        Long id = db.insert(clientContract.TABLE_NAME, null, values);
+//        client.setId(id);
+
+        return id;
+    }
+
+    //INSERT DATA INTO DAILY RECORD
+    public Long insert(Medical medical){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+if(user.getId() != null)
+        values.put(clientContract._ID, user.getId());
+
+
+        values.put(medicalContract.DATE, medical.getDate());
+        values.put(medicalContract.PATIENT_ID, medical.getPatient_id());
+        values.put(medicalContract.NURSE_ID, medical.getuser_id());
+
+        values.put(medicalContract.BLOOD_PRESSURE, medical.getBlood_pressure());
+        values.put(medicalContract.SUGAR_LEVEL, medical.getSugar_level());
+        values.put(medicalContract.HEART_RATE, medical.getHeart_rate());
+        values.put(medicalContract.TEMPERATURE, medical.getTemperature());
+
+        Long id = db.insert(medicalContract.TABLE_NAME, null, values);
+//        medical.setId(id);
+
+        return id;
+    }
+
+
+
+
+
+
+
+//Delete from database
+public boolean delete(String table_Name, String key_id, String id){
+	SQLiteDatabase db = helper.getWritableDatabase();
+	return db.delete(table_Name, key_id + "=" + id, null) > 0;
+}
+}

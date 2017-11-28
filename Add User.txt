@@ -1,0 +1,27 @@
+//Will store into sqlite database when is unable to store in server
+
+
+in line 180: User user = new User(name, ic, gender, contact, birthYear, address, gender, register_date, user_type);
+
+
+
+if(!obj.getBoolean("error"))
+// wont store in sqlite database
+else
+//store in sqlite database
+saveToLocalStorage(user);
+
+
+//In the Response.ErrorListener()
+saveToLocalStorage(user);
+
+
+
+
+private void saveToLocalStorage(User user){
+	//QUERY HERE TO ADD USER INTO DATABASE
+	Queries queries = new Queries(new DatabaseHelper(getApplicationContext()));
+
+	if(queries.insert(user) != 0)
+		Toast.makeText(getApplicationContext(), "User Stored In Local", Toast.LENGTH_SHORT).show();
+}
