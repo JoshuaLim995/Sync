@@ -1,0 +1,9 @@
+http://www.singhajit.com/schedule-local-notification-in-android/
+
+https://stackoverflow.com/questions/44905343/create-notification-with-sqlite
+
+https://stackoverflow.com/questions/42530832/how-to-make-multiple-notification-base-on-date-and-time-saved-saved-in-sqlite-da
+
+http://www.vogella.com/tutorials/AndroidNotifications/article.html
+
+https://www.quora.com/How-do-I-develop-an-Android-app-with-auto-notifications-using-the-SQlite-database

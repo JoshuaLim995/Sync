@@ -1,0 +1,16 @@
+public void deleteTables(){
+        SQLiteDatabase db = helper.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        List<String> tables = new ArrayList<>();
+
+        // iterate over the result set, adding every table name to a list
+        while (c.moveToNext()) {
+            tables.add(c.getString(0));
+        }
+
+        // call DROP TABLE on every table name
+        for (String table : tables) {
+            db.delete(table, null, null);
+        }
+
+}

@@ -1,0 +1,19 @@
+https://stackoverflow.com/questions/37428840/how-to-put-progress-dialog-in-seperate-class-and-call-in-every-activity-in-andro
+
+public class DialogsUtils {
+    public static ProgressDialog showProgressDialog(Context context, String message){
+        ProgressDialog m_Dialog = new ProgressDialog(context);
+            m_Dialog.setMessage(message);
+            m_Dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            m_Dialog.setCancelable(false);
+            m_Dialog.show();
+            return m_Dialog;
+        }
+
+} 
+
+In the Activity class:
+
+ProgressDialog myDialog= DialogUtils.showProgressDialog(this,"some message");
+...
+myDialog.dismiss();
