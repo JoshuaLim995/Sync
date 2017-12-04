@@ -1,9 +1,20 @@
 http://www.singhajit.com/schedule-local-notification-in-android/
 
 https://stackoverflow.com/questions/44905343/create-notification-with-sqlite
+http://droidmentor.com/schedule-notifications-using-alarmmanager/
 
 https://stackoverflow.com/questions/42530832/how-to-make-multiple-notification-base-on-date-and-time-saved-saved-in-sqlite-da
 
 http://www.vogella.com/tutorials/AndroidNotifications/article.html
 
 https://www.quora.com/How-do-I-develop-an-Android-app-with-auto-notifications-using-the-SQlite-database
+
+
+generating pdf
+https://trinitytuts.com/create-pdf-file-in-android/
+
+
+
+https://stackoverflow.com/questions/44905343/create-notification-with-sqlite
+http://droidmentor.com/schedule-notifications-using-alarmmanager/
+http://droidmentor.com/schedule-notifications-using-alarmmanager/
