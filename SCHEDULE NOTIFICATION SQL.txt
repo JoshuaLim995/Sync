@@ -1,0 +1,39 @@
+
+private void startSchedule(){
+
+Queries dbq = new Queries(new DatabaseHelper(this));
+String[] columns = {
+DatabaseContract.DriverScheduleContract._ID,
+DatabaseContract.DriverScheduleContract.DRIVER_NAME,
+DatabaseContract.DriverScheduleContract.PATIENT_NAME,
+DatabaseContract.DriverScheduleContract.NURSE_NAME,
+DatabaseContract.DriverScheduleContract.LOCATION,
+DatabaseContract.DriverScheduleContract.DESCRIPTION,
+DatabaseContract.DriverScheduleContract.DATE,
+DatabaseContract.DriverScheduleContract.TIME
+};
+
+Cursor cursor = dbq.query(DatabaseContract.PatientContract.TABLE_NAME, columns, null, null, null, null, DatabaseContract.PatientContract._ID + " ASC");
+
+if(cursor.moveToFirst()){
+            do{
+                schedule = new Schedule(
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract._ID)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DRIVER_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.PATIENT_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.NURSE_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.LOCATION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DESCRIPTION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DATE)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.TIME))
+);
+
+
+            }while (cursor.moveToNext());
+}
+else {
+Toast.makeText(getContext(), "Cursor is empty", Toast.LENGTH_SHORT).show();
+}
+}
+
+

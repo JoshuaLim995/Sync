@@ -1,0 +1,66 @@
+public class NotificationScheduler {
+
+public static final int REMINDER_CODE = 0;
+
+
+public static void setReminder(Context context, Class<?> class, Schedule schedule){
+String dateTimeString = schedule.getDate() + " " + schedule.getTime();
+SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+try{
+Date dateTime = simpleDateFormat.parse(dateTimeString);
+
+
+TimeZone timeZone = TimeZone.getTimeZone("GMT+8");
+Calender calender = Calender.getInstance(timeZone); //TODO: put +8:00
+calender.setTime(dateTime);
+
+/*
+int year = c.get(Calendar.YEAR);
+int month = c.get(Calendar.MONTH);
+int day = c.get(Calendar.DAY_OF_MONTH);
+
+int hour = c.get(
+
+
+calender.set(Calender.YEAR, year);
+*/
+
+Intent intent = new Intent(context, class);
+PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), REMINDER_CODE, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
+
+
+}catch(ParseException ex){
+//ERROR EXCEPTION MESSAGE
+return;
+}
+}
+
+public static void showNotification(Context context,Class<?> class,String title,String content){
+Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+Intent notificationIntent = new Intent(context, class);
+notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+stackBuilder.addParentStack(cls);
+stackBuilder.addNextIntent(notificationIntent);
+
+PendingIntent pendingIntent = stackBuilder.getPendingIntent(REMINDER_CODE, PendingIntent.FLAG_UPDATE_CURRENT);
+
+NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
+Notification notification = builder.setContentTitle(title)
+.setContentText(content)
+.setAutoCancel(true)
+.setSound(alarmSound)
+.setSmallIcon(R.mipmap.ic_launcher_round)
+.setContentIntent(pendingIntent).build();
+
+NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+notificationManager.notify(REMINDER_CODE, notification);
+}
+
+
+}

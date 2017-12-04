@@ -1,0 +1,230 @@
+
+
+// WITHOUT SELECTION
+$query = "SELECT ds.ID, d.Name AS Driver_Name, p.Name AS Patient_Name, n.Name AS Nurse_Name, ds.Location, ds.Description, ds.Date, ds.Time FROM users d INNER JOIN driver_schedule ds ON ds.Driver_ID = d.ID INNER JOIN users n ON ds.Nurse_ID = n.ID INNER JOIN patients p ON ds.Patient_ID = p.ID"
+
+//WITH SELECTION BY DRIVER_ID
+$query = "SELECT ds.ID, d.Name AS Driver_Name, p.Name AS Patient_Name, n.Name AS Nurse_Name, ds.Location, ds.Description, ds.Date, ds.Time FROM users d INNER JOIN driver_schedule ds ON ds.Driver_ID = d.ID INNER JOIN users n ON ds.Nurse_ID = n.ID INNER JOIN patients p ON ds.Patient_ID = p.ID WHERE ds.Driver_ID = $id"
+
+
+
+
+DatabaseContract
+
+public class DriverScheduleContract extends DatabaseContract {
+public static final String TABLE_NAME = "driver_schedule";
+public static final String DRIVER_NAME = "driver_name";
+public static final String PATIENT_NAME = "patient_name";
+public static final String NURSE_NAME = "nurse_name";
+public static final String LOCATION = "location";
+public static final String DESCRIPTION = "description";
+public static final String DATE = "date";
+public static final String TIME = "time";
+}
+
+
+DatabaseHelper
+
+private staic final String CREATE_DRIVER_SCHEDULE_TABLE = 
+"CREATE TABLE " + DatabaseContract.DriverScheduleContract.TABLE_NAME + " (" +
+DatabaseContract.DriverScheduleContract._ID + "INTEGER PRIMARY KEY, " +
+DatabaseContract.DriverScheduleContract.DRIVER_NAME + " TEXT, " +
+DatabaseContract.DriverScheduleContract.PATIENT_NAME + " TEXT, " +
+DatabaseContract.DriverScheduleContract.NURSE_NAME + " TEXT, " +
+DatabaseContract.DriverScheduleContract.LOCATION + " TEXT, " +
+DatabaseContract.DriverScheduleContract.DESCRIPTION + " TEXT, " +
+DatabaseContract.DriverScheduleContract.DATE + " TEXT, " +
+DatabaseContract.DriverScheduleContract.TIME + " TEXT)";
+
+
+
+Query
+
+public Long insert(Schedule schedule){
+SQLiteDatabase database = helper.getReadableDatabase();
+ContentValues values = new ContentValues();
+
+values.put(DatabaseContract.DriverScheduleContract._ID, schedule.getID());
+values.put(DatabaseContract.DriverScheduleContract.DRIVER_NAME, schedule.getDriverName());
+values.put(DatabaseContract.DriverScheduleContract.PATIENT_NAME, schedule.getPatientName());
+values.put(DatabaseContract.DriverScheduleContract.NURSE_NAME, schedule.getNurseName());
+values.put(DatabaseContract.DriverScheduleContract.LOCATION, schedule.getLocation());
+values.put(DatabaseContract.DriverScheduleContract.DESCRIPTION, schedule.getDescription());
+values.put(DatabaseContract.DriverScheduleContract.DATE, schedule.getDate());
+values.put(DatabaseContract.DriverScheduleContract.TIME, schedule.getTime());
+
+return database.insertWithOnConflict(DatabaseContract.DriverScheduleContract.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+}
+
+
+
+DownloadData
+
+//DOWNLOAD ALL DRIVER SCHEDULE
+public void downloadAllDriverSchedule(){
+
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, URLs.READ_ALL,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        try {
+                            JSONObject obj = new JSONObject(new String(response.data));
+
+                            if(!obj.getBoolean("error")) {
+
+                                //converting the string to json array object
+                                JSONArray array = obj.getJSONArray("result");
+
+                                //traversing through all the object
+                                for (int i = 0; i < array.length(); i++) {
+
+                                    //getting user object from json array
+                                    JSONObject scheduleJason = array.getJSONObject(i);
+                    
+                                    Schedule schedule = new Schedule(
+                                            scheduleJason.getInt("ID"),
+                                            scheduleJason.getString("Driver_Name"),
+                                            scheduleJason.getString("Patient_Name"),
+                                            scheduleJason.getString("Nurse_Name"),
+                                            scheduleJason.getString("Location"),
+                                            scheduleJason.getString("Description"),
+                                            scheduleJason.getString("Date"),
+                                            scheduleJason.getString("Time")
+                                    );
+
+
+                                    //Add schedule into database
+                                    Queries queries = new Queries(new DatabaseHelper(context));
+                                    queries.insert(schedule);
+                                }
+                            }
+                        } catch (JSONException e) {
+
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Unable to retrieve data from server", Toast.LENGTH_SHORT).show();
+
+                    }
+                }){
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String, String> params = new HashMap<>();
+
+                params.put("type", "Schedule"); //TODO: check type if correct o not
+                return params;
+            }
+
+        };
+
+
+        //adding our stringrequest to queue
+        Volley.newRequestQueue(context).add(multipartRequest);
+
+}
+
+
+
+//DOWNLOAD DRIVER SCHEDULE BASE ON ID
+private void downloadDriverSchedule(String id){
+
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, URLs.READ_DATA,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        try {
+                            JSONObject obj = new JSONObject(new String(response.data));
+                            //           Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                            if(!obj.getBoolean("error")){
+                                Toast.makeText(getActivity(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                JSONArray array = obj.getJSONArray("result");
+                                JSONObject scheduleJason = array.getJSONObject(0);
+
+                                Schedule schedule = new Schedule(
+                                            scheduleJason.getInt("ID"),
+                                            scheduleJason.getString("Driver_Name"),
+                                            scheduleJason.getString("Patient_Name"),
+                                            scheduleJason.getString("Nurse_Name"),
+                                            scheduleJason.getString("Location"),
+                                            scheduleJason.getString("Description"),
+                                            scheduleJason.getString("Date"),
+                                            scheduleJason.getString("Time")
+                                    );
+
+                                //Add schedule into database
+                                    Queries queries = new Queries(new DatabaseHelper(context));
+                                    queries.insert(schedule);
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String, String> params = new HashMap<>();
+                //Put Patient data to parameters
+                params.put("type", "Schedule");
+                params.put("id", id);
+                return params;
+            }
+
+        };
+
+        //adding the request to volley
+        Volley.newRequestQueue(getActivity()).add(multipartRequest);
+}
+
+
+
+//Get Driver Schedule from local based on driver name
+private void getFromLocal(String driver_name){
+String selection = DatabaseContract.DriverScheduleContract.DRIVER_NAME + " = ?";
+String[] selectionArgs = {driver_name};
+
+String[] columns = {
+DatabaseContract.DriverScheduleContract._ID,
+DatabaseContract.DriverScheduleContract.DRIVER_NAME,
+DatabaseContract.DriverScheduleContract.PATIENT_NAME,
+DatabaseContract.DriverScheduleContract.NURSE_NAME,
+DatabaseContract.DriverScheduleContract.LOCATION,
+DatabaseContract.DriverScheduleContract.DESCRIPTION,
+DatabaseContract.DriverScheduleContract.DATE,
+DatabaseContract.DriverScheduleContract.TIME
+};
+
+Cursor cursor = dbq.query(DatabaseContract.DriverScheduleContract.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+
+if(cursor.moveToNext()){
+schedule = new Schedule(
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract._ID)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DRIVER_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.PATIENT_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.NURSE_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.LOCATION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DESCRIPTION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DATE)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.TIME))
+);
+
+//Add more stuff here
+}
+
+
