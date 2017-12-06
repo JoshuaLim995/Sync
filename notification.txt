@@ -18,3 +18,5 @@ https://trinitytuts.com/create-pdf-file-in-android/
 https://stackoverflow.com/questions/44905343/create-notification-with-sqlite
 http://droidmentor.com/schedule-notifications-using-alarmmanager/
 http://droidmentor.com/schedule-notifications-using-alarmmanager/
+
+https://gist.github.com/BrandonSmith/6679223
