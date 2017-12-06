@@ -2,3 +2,5 @@ https://stackoverflow.com/questions/44905343/create-notification-with-sqlite
 http://droidmentor.com/schedule-notifications-using-alarmmanager/
 
 http://www.vogella.com/tutorials/AndroidNotifications/article.html
+
+https://gist.github.com/BrandonSmith/6679223
