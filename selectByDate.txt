@@ -1,0 +1,58 @@
+public Cursor getOrderByDateTime(){
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        String QUERY = "SELECT * FROM " + DatabaseContract.DriverScheduleContract.TABLE_NAME + " ORDER BY date(" + DatabaseContract.DriverScheduleContract.DATE + ")";
+
+        return db.rawQuery(QUERY, null);
+}
+
+
+display order by date and time
+String QUERY = "SELECT * FROM driver_schedule ORDER BY date(date), time";
+
+display 1st row
+String QUERY = "SELECT * FROM driver_schedule ORDER BY date(date), time LIMIT 1";
+
+display after 2nd row
+String QUERY = "SELECT * FROM driver_schedule ORDER BY date(date), time LIMIT 1, 9999";
+
+
+
+//Get all order by date
+public Cursor getDriverSchedule(){
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        String QUERY = "SELECT * FROM driver_schedule ORDER BY date(date), time";
+
+        return db.rawQuery(QUERY, null);
+}
+
+
+
+
+SELECT * FROM driver_schedule WHERE date => date('now') AND time(time) > time(now) ORDER BY date(date), time LIMIT 1
+
+
+
+https://sqliteonline.com/
+
+
+
+CREATE TABLE testing (
+date TEXT,
+time TEXT
+);
+
+
+
+SELECT * FROM  testing where date(date) > date('now');
+
+
+
+INSERT INTO testing (date, time)
+VALUES ('2017-12-22', '22:00');
+
+
+
+
+SELECT * FROM  testing where date >= date('now') and time >= time('now') order by date, time;

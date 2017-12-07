@@ -1,0 +1,7 @@
+https://android.googlesource.com/platform/development/+/master/samples?autodive=0%2F%2F
+
+https://github.com/googlesamples/android-BasicSyncAdapter
+
+http://www.oodlestechnologies.com/blogs/How-to-use-Sync-Adapter-In-Android
+
+https://josiassena.com/building-a-sync-adapter-and-using-it-on-android/

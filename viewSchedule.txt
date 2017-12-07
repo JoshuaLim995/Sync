@@ -1,0 +1,130 @@
+package com.joshua_lsj.goldenage.Fragments;
+
+import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.joshua_lsj.goldenage.Adapter.UserAdapter;
+import com.joshua_lsj.goldenage.DataBase.DatabaseContract;
+import com.joshua_lsj.goldenage.DataBase.DatabaseHelper;
+import com.joshua_lsj.goldenage.DataBase.Queries;
+import com.joshua_lsj.goldenage.Other.SharedPrefManager;
+import com.joshua_lsj.goldenage.Other.URLs;
+import com.joshua_lsj.goldenage.Experiment.ViewUserActivity;
+import com.joshua_lsj.goldenage.Objects.Schedule;
+import com.joshua_lsj.goldenage.R;
+import com.joshua_lsj.goldenage.Other.VolleyMultipartRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by limsh on 11/4/2017.
+ */
+
+public class ListViewScheduleFragment extends Fragment {
+
+    View myView;
+    ListView listView;
+    ArrayList<Schedule> scheduleList;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        myView = inflater.inflate(R.layout.fragment_list_view, container, false);
+
+        listView = myView.findViewById(R.id.list_view);
+        TextView emptyText = myView.findViewById(R.id.empty);
+        listView.setEmptyView(emptyText);
+
+        ScheduleList = new ArrayList<Schedule>();
+
+   DisplaySchedule();
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                
+
+            }
+        });
+
+        return myView;
+    }
+
+private void DisplaySchedule(){
+Queries queries = new Queries(new DatabaseHelper(getActivity())));
+
+String[] columns = {
+DatabaseContract.DriverScheduleContract._ID,
+DatabaseContract.DriverScheduleContract.DRIVER_NAME,
+DatabaseContract.DriverScheduleContract.PATIENT_NAME,
+DatabaseContract.DriverScheduleContract.NURSE_NAME,
+DatabaseContract.DriverScheduleContract.LOCATION,
+DatabaseContract.DriverScheduleContract.DESCRIPTION,
+DatabaseContract.DriverScheduleContract.DATE,
+DatabaseContract.DriverScheduleContract.TIME
+};
+
+Cursor cursor = dbq.query(DatabaseContract.PatientContract.TABLE_NAME, columns, null, null, null, null, DatabaseContract.PatientContract._ID + " ASC");
+
+Cursor cursor = dbq.getDriverSchedule();
+
+if(cursor.moveToFirst()){
+            do{
+
+               Schedule schedule = new Schedule(
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract._ID)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DRIVER_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.PATIENT_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.NURSE_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.LOCATION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DESCRIPTION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DATE)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.TIME))
+);
+String dateTimeString = schedule.getDate() + " " + schedule.getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try{
+            Date dateTime = simpleDateFormat.parse(dateTimeString);
+
+Calendar calender = Calendar.getInstance();
+calender.setTime(dateTime);
+
+Calendar nowC = Calendar.getInstance();
+if(nowC.before(calender))
+scheduleList.add();
+}catch(ParseException ex){
+ex.printStackTrace();
+}
+
+}while (cursor.moveToNext());
+}
+ScheduleAdapter scheduleAdapter = new ScheduleAdapter(scheduleList, getActivity());
+listView.setAdapter(scheduleAdapter);
+}
+
+}
