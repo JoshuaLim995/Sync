@@ -5,3 +5,5 @@ https://github.com/googlesamples/android-BasicSyncAdapter
 http://www.oodlestechnologies.com/blogs/How-to-use-Sync-Adapter-In-Android
 
 https://josiassena.com/building-a-sync-adapter-and-using-it-on-android/
+
+https://github.com/codepath/android_guides/wiki/Server-Synchronization-(SyncAdapter)
