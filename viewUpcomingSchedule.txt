@@ -1,0 +1,36 @@
+public Cursor getUpcomingSchedule(String now){
+
+String query = String.Format("SELECT * FROM driver_schedule WHERE datetime >= '{0}' LIMIT 1, 99", now);
+
+SQLiteDatabase db = helper.getReadableDatabase();
+return db.rawQuery(query, null);
+}
+
+
+
+private void getUpcaomingScheduleArray(){
+        Queries queries = new Queries(new DatabaseHelper(getActivity())));
+
+SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+Calender calender = Calender.getInstance();
+String now = simpleDateFormat.format(calender.getTime());
+Cursor cursor = queries.getUpcomingSchedule(now);
+ArrayList<Schedule> scheduleList = new ArrayList<>();
+
+        if(cursor.moveToFirst()){
+            do{
+                scheduleList.add(new Schedule(
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract._ID)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DRIVER_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.PATIENT_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.NURSE_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.LOCATION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DESCRIPTION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DATETIME))
+));
+            }while (cursor.moveToNext());
+        }
+        UserAdapter userAdapter = new UserAdapter(userList, getActivity());
+        listView.setAdapter(userAdapter);
+}
+

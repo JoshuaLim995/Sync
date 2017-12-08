@@ -1,0 +1,57 @@
+
+// in Queries class
+private Cursor getNowDriverSchedule(String now){
+
+String query = String.Format("SELECT * FROM driver_schedule WHERE DATE(datetime) = '{0}' AND TIME(datetime) >= TIME('{0}') LIMIT 1", now);
+
+SQLiteDatabase db = helper.getReadableDatabase();
+return db.rawQuery(query, null);
+}
+
+
+//In ViewNowDriverSchedule
+
+private Schedule getNowDriverScheduleFromLocal(){
+
+Queries queries = new Queries(new DatabaseHelper(getActivity())));
+
+SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+Calender calender = Calender.getInstance();
+String now = simpleDateFormat.format(calender.getTime());
+Cursor cursor = queries.getNowDriverSchedule(now);
+
+if(cursor.moveToFirst()){
+
+Schedule schedule = new Schedule(
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract._ID)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DRIVER_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.PATIENT_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.NURSE_NAME)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.LOCATION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DESCRIPTION)),
+cursor.getInt(cursor.getColumnIndex(DatabaseContract.DriverScheduleContract.DATETIME))
+);
+return schedule;
+}
+else 
+return null;
+}
+
+public void viewSchedule(){
+Schedule schdule = getNowDriverScheduleFromLocal();
+
+}
+
+
+private void DisplayNowDriverSchedule(){
+ArrayList<Schedule> scheduleList = new ArrayList<>();
+scheduleList.add(getNowDriverScheduleFromLocal());
+ScheduleAdapter scheduleAdapter = new ScheduleAdapter(scheduleList, getActivity());
+listView.setAdapter(scheduleAdapter);
+}
+
+
+
+
+
+//IF no record in date, display:: no record for today, see upcoming schedule
